@@ -45,7 +45,7 @@ javascript:(function(){
         return add(steam64identifier, miniProfileId);
     }
 
-    var friends = [].slice.call(document.querySelectorAll('#memberList .member_block, #memberManageList .member_block, .friendHolder, .friendBlock'));
+    var friends = [].slice.call(document.querySelectorAll('#memberList .member_block, #memberManageList .member_block, .friendHolder, .friendBlock, .friend_block_v2'));
     var lookup = {};
 
     friends.forEach(function(friend) {
@@ -60,14 +60,8 @@ javascript:(function(){
         var friendElements = lookup[player.SteamId];
 
         friendElements.forEach(function(friend) {
-            var inGameText = friend.querySelector('.linkFriend_in-game');
             var span = document.createElement('span');
-            span.style.fontWeight = 'bold';
             span.style.display = 'block';
-
-            if (inGameText) {
-                inGameText.innerHTML = inGameText.innerHTML.replace(/<br ?\/?>/, ' - ');
-            }
 
             if (player.NumberOfVACBans || player.NumberOfGameBans) {
                 var text = '';
@@ -77,19 +71,27 @@ javascript:(function(){
                 }
 
                 if (player.NumberOfVACBans) {
-                    text += (text === '' ? '' : ', ') +
-                        player.NumberOfVACBans + ' VAC bans';
+                    text += (text === '' ? '' : ', ') + player.NumberOfVACBans + ' VAC bans';
                 }
                 text += ' ' + player.DaysSinceLastBan + ' days ago.';
 
                 span.style.color = 'rgb(255, 73, 73)';
-                span.innerHTML = text;
+                span.innerHTML = "✘ " + text;
             } else {
                 span.style.color = 'rgb(43, 203, 64)';
-                span.innerHTML = 'No Bans for this player.';
+                span.innerHTML = '✔ No Bans';
             }
 
-            friend.querySelector('.friendSmallText').appendChild(span);
+            var block = friend.querySelector('.friend_block_content');
+            if (block != null) {
+                block.append(span);
+                friend.style.height = "65px";
+            }
+
+            block = friend.querySelector('.friendSmallText');
+            if (block != null) {
+                block.append(span);
+            }
         });
     }
 
